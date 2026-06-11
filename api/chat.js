@@ -13,8 +13,8 @@ export default async function handler(req, res) {
 
   try {
     const body = {
-      model: req.body.model || "claude-sonnet-4-20250514",
-      max_tokens: req.body.max_tokens || 1000,
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1000,
       system: req.body.system,
       messages: req.body.messages,
     };
@@ -30,8 +30,10 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log('Anthropic response:', JSON.stringify(data));
     return res.status(200).json(data);
   } catch (error) {
+    console.log('Error:', error.message);
     return res.status(500).json({ error: error.message });
   }
 }
