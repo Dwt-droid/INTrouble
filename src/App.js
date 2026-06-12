@@ -939,3 +939,6 @@ const startToolSession = async (tool) => {
     </button>
   ))}
 </div>
+</div>
+  );
+}
