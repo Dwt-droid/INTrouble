@@ -677,12 +677,6 @@ const startToolSession = async (tool) => {
     setMessages([]); setInput(""); setSessionFault(""); setOfflineStep(0); setSelectedTool(null);
   };
 
-  const navigate = (t) => {
-    setTab(t);
-    if (t === "home") { reset(); }
-    else if (t === "history") { setScreen("history"); }
-  };
-
   const categories = CATEGORY_DATA.map(c => ({ ...c, label: t.categories[c.id].label, desc: t.categories[c.id].desc }));
 
   return (
