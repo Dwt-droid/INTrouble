@@ -853,7 +853,7 @@ const startToolSession = async (tool) => {
   <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px", maxWidth: 680, margin: "0 auto", width: "100%", animation: "slideIn 0.3s ease" }}>
     <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: 2, color: "#f59e0b", marginBottom: 18 }}>🛠️ ENGINEERING TOOLS</div>
     {Object.entries(TOOL_GROUPS).map(([groupId, group]) => {
-      const groupTools = TOOLS.filter(t => t.group === groupId);
+     const groupTools = TOOLS.filter(tool => tool.group === groupId);
       return (
         <div key={groupId} style={{ marginBottom: 20 }}>
           <div style={{ fontSize: 10, color: group.color, letterSpacing: 1, marginBottom: 8, borderBottom: `1px solid ${group.color}22`, paddingBottom: 4 }}>{group.label}</div>
