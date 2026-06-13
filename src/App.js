@@ -723,9 +723,14 @@ const startToolSession = async (tool) => {
 
         {/* RIGHT — buttons */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={() => supabase.auth.signInWithOAuth({ provider: 'github' })} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-           🔐 Login
-        </button>
+         <button onClick={() => supabase.auth.signInWithOAuth({ 
+  provider: 'github',
+  options: {
+    redirectTo: 'https://introuble.vercel.app'
+  }
+})} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+  🔐 Login
+</button>
           <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", background: isOnline ? "#0d2a1a" : "#2a1a0d", border: `1px solid ${isOnline ? "#10b981" : "#f59e0b"}`, borderRadius: 20, fontSize: 10, color: isOnline ? "#10b981" : "#f59e0b" }}>
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: isOnline ? "#10b981" : "#f59e0b", animation: "pulse 2s infinite" }} />
             {isOnline ? "AI" : "OFF"}
