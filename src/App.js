@@ -707,7 +707,7 @@ const startToolSession = async (tool) => {
 <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
   
   {/* LEFT — logo only */}
-  <img src="/logo.png" alt="INTrouble" style={{ height: 55, borderRadius: 6 }} />
+  <img src="/logo.png" alt="INTrouble" style={{ height: 100, borderRadius: 6, marginLeft: "auto" }} />
 
   {/* RIGHT — buttons */}
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
