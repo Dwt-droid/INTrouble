@@ -468,10 +468,21 @@ export default function App() {
   const [selectedTool, setSelectedTool] = useState(null);
   const [savedToast, setSavedToast] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [user, setUser] = useState(null);
   const bottomRef = useRef(null);
   const t = T[lang];
 
   useEffect(() => {
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    setUser(session?.user ?? null);
+  });
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user ?? null);
+  });
+  return () => subscription.unsubscribe();
+ }, []);
+  
+    useEffect(() => {
     const on = () => setIsOnline(true);
     const off = () => setIsOnline(false);
     window.addEventListener("online", on);
@@ -723,14 +734,18 @@ const startToolSession = async (tool) => {
 
         {/* RIGHT — buttons */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-         <button onClick={() => supabase.auth.signInWithOAuth({ 
-  provider: 'github',
-  options: {
-    redirectTo: 'https://introuble.vercel.app'
-  }
-})} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-  🔐 Login
-</button>
+   {user ? (
+  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
+    <button onClick={() => supabase.auth.signOut()} style={{ background: "transparent", border: "1px solid #64748b", color: "#64748b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+      Logout
+    </button>
+  </div>
+) : (
+  <button onClick={() => supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: 'https://introuble.vercel.app' } })} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+    🔐 Login
+  </button>
+)}
           <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", background: isOnline ? "#0d2a1a" : "#2a1a0d", border: `1px solid ${isOnline ? "#10b981" : "#f59e0b"}`, borderRadius: 20, fontSize: 10, color: isOnline ? "#10b981" : "#f59e0b" }}>
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: isOnline ? "#10b981" : "#f59e0b", animation: "pulse 2s infinite" }} />
             {isOnline ? "AI" : "OFF"}
