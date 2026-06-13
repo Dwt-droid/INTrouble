@@ -703,55 +703,49 @@ const startToolSession = async (tool) => {
         </div>
       )}
 
-      {/* Header */}
-<div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+     {/* Header */}
+      <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
 
-  {/* LEFT — logo + title */}
-  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-    <img src="/logo.png" alt="INTrouble" style={{ height: 55, borderRadius: 6 }} />
-    <div>
-      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
-      <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub}</div>
-    </div>
-  </div>
-{/* RIGHT — buttons */}
-<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {/* LEFT — logo + title */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <img src="/logo.png" alt="INTrouble" style={{ height: 55, borderRadius: 6 }} />
+          <div>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
+            <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub}</div>
+          </div>
+        </div>
 
-  {/* Login button — placeholder */}
-  <button style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-    🔐 Login
-  </button>
-
-  {/* Online indicator */}
-  <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", background: isOnline ? "#0d2a1a" : "#2a1a0d", border: `1px solid ${isOnline ? "#10b981" : "#f59e0b"}`, borderRadius: 20, fontSize: 10, color: isOnline ? "#10b981" : "#f59e0b" }}>
-    <div style={{ width: 6, height: 6, borderRadius: "50%", background: isOnline ? "#10b981" : "#f59e0b", animation: "pulse 2s infinite" }} />
-    {isOnline ? "AI" : "OFF"}
-  </div>
-
-  {/* Lang selector */}
-  <div style={{ position: "relative" }}>
-    <button className="lang-btn" onClick={() => setShowLangMenu(v => !v)} style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-      {lang.toUpperCase()} ▾
-    </button>
-    {showLangMenu && (
-      <div style={{ position: "absolute", right: 0, top: "110%", background: "#0a1628", border: "1px solid #1e3a5f", borderRadius: 8, zIndex: 100, overflow: "hidden", minWidth: 100 }}>
-        {["en","fr","es","de"].map(l => (
-          <button key={l} onClick={() => { setLang(l); setShowLangMenu(false); }} style={{ display: "block", width: "100%", padding: "8px 14px", background: lang===l ? "#1e3a5f" : "transparent", border: "none", color: "#e2e8f0", fontSize: 12, fontFamily: "inherit", cursor: "pointer", textAlign: "left" }}>
-            {l==="en"?"🇬🇧 English":l==="fr"?"🇫🇷 Français":l==="es"?"🇪🇸 Español":"🇩🇪 Deutsch"}
+        {/* RIGHT — buttons */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+            🔐 Login
           </button>
-        ))}
+          <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", background: isOnline ? "#0d2a1a" : "#2a1a0d", border: `1px solid ${isOnline ? "#10b981" : "#f59e0b"}`, borderRadius: 20, fontSize: 10, color: isOnline ? "#10b981" : "#f59e0b" }}>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: isOnline ? "#10b981" : "#f59e0b", animation: "pulse 2s infinite" }} />
+            {isOnline ? "AI" : "OFF"}
+          </div>
+          <div style={{ position: "relative" }}>
+            <button className="lang-btn" onClick={() => setShowLangMenu(v => !v)} style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+              {lang.toUpperCase()} ▾
+            </button>
+            {showLangMenu && (
+              <div style={{ position: "absolute", right: 0, top: "110%", background: "#0a1628", border: "1px solid #1e3a5f", borderRadius: 8, zIndex: 100, overflow: "hidden", minWidth: 100 }}>
+                {["en","fr","es","de"].map(l => (
+                  <button key={l} onClick={() => { setLang(l); setShowLangMenu(false); }} style={{ display: "block", width: "100%", padding: "8px 14px", background: lang===l ? "#1e3a5f" : "transparent", border: "none", color: "#e2e8f0", fontSize: 12, fontFamily: "inherit", cursor: "pointer", textAlign: "left" }}>
+                    {l==="en"?"🇬🇧 English":l==="fr"?"🇫🇷 Français":l==="es"?"🇪🇸 Español":"🇩🇪 Deutsch"}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {screen !== "home" && screen !== "history" && (
+            <button className="btn-ghost" onClick={reset} style={{ background: "transparent", border: "1px solid #2a3a52", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+              {t.newSession}
+            </button>
+          )}
+        </div>
+
       </div>
-    )}
-  </div>
-
-  {/* New session button */}
-  {screen !== "home" && screen !== "history" && (
-    <button className="btn-ghost" onClick={reset} style={{ background: "transparent", border: "1px solid #2a3a52", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-      {t.newSession}
-    </button>
-  )}
-
-</div>
 
       {/* Offline banner */}
       {!isOnline && screen !== "history" && (
