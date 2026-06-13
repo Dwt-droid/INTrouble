@@ -706,7 +706,7 @@ const startToolSession = async (tool) => {
       {/* Header */}
       <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 34, height: 34, background: "#f59e0b", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>⚡</div>
+         <img src="/logo.png" alt="INTrouble" style={{ height: 34, borderRadius: 6 }} />
           <div>
             <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
             <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub}</div>
