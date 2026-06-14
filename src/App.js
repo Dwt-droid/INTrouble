@@ -337,7 +337,7 @@ Calculate:
 3. Maximum Icc (at origin): Icc_max = U / (√3 × Zt)
 4. Minimum Icc (end of circuit, 1ph): Icc_min = 0.8 × U / (2 × Zc + Zt/3)
 5. Check protection device breaking capacity ≥ Icc_max
-6. Check cable thermal withstand: S_min = Icc × √t / k
+6. Cable thermal withstand: S_min = Icc × √t / k
 Flag any non-compliance and recommend corrective actions.`,
 
   sc3: `You are an expert electrical engineer for three-phase short-circuit current calculations in LV (≤1kV), MV (1–36kV), and HV (>36kV) networks per IEC 60909.
@@ -451,7 +451,7 @@ function Message({ msg }) {
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function App() {
   const [lang, setLang] = useState("en");
-  const [screen, setScreen] = useState("home"); // home | brand | category | chat | history
+  const [screen, setScreen] = useState("home");
   const [tab, setTab] = useState("home");
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -473,16 +473,16 @@ export default function App() {
   const t = T[lang];
 
   useEffect(() => {
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    setUser(session?.user ?? null);
-  });
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-    setUser(session?.user ?? null);
-  });
-  return () => subscription.unsubscribe();
- }, []);
-  
-    useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
     const on = () => setIsOnline(true);
     const off = () => setIsOnline(false);
     window.addEventListener("online", on);
@@ -512,12 +512,12 @@ export default function App() {
     setTimeout(() => setSavedToast(false), 3000);
   }, [lang]);
 
-const buildSystemPrompt = () => {
-  if (selectedTool) {
-    return TOOL_PROMPTS[selectedTool.id] + `\n\nLANGUAGE: Respond in ${lang === "en" ? "English" : lang === "fr" ? "French" : lang === "es" ? "Spanish" : "German"}.`;
-  }
-  const brandKnowledge = selectedBrand ? BRAND_KNOWLEDGE[selectedBrand.id] : "";
-  return `You are an expert electrical field technician assistant specializing in:
+  const buildSystemPrompt = () => {
+    if (selectedTool) {
+      return TOOL_PROMPTS[selectedTool.id] + `\n\nLANGUAGE: Respond in ${lang === "en" ? "English" : lang === "fr" ? "French" : lang === "es" ? "Spanish" : "German"}.`;
+    }
+    const brandKnowledge = selectedBrand ? BRAND_KNOWLEDGE[selectedBrand.id] : "";
+    return `You are an expert electrical field technician assistant specializing in:
 - Energy Distribution (MV/LV switchgear, transformers, feeders, protection relays)
 - Electrical Equipment (motors, generators, UPS, power factor correction, VFDs)
 - Control & Command Systems (control panels, contactors, relays, wiring)
@@ -544,38 +544,38 @@ Format each response with:
 - Or 🎯 DIAGNOSIS + 🔧 CORRECTIVE ACTION when fault is found
 
 Keep responses concise and practical for field use.`;
-};
+  };
 
-const startToolSession = async (tool) => {
-  setSelectedTool(tool);
-  setScreen("chat");
-  setMessages([]);
-  setSessionFault(tool.label);
-  const start = Date.now();
-  setSessionStart(start);
-  const userMsg = { role: "user", content: `🛠️ TOOL: ${tool.label}` };
-  setLoading(true);
-  setMessages([userMsg]);
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: TOOL_PROMPTS[tool.id] + `\n\nLANGUAGE: Respond in ${lang === "en" ? "English" : lang === "fr" ? "French" : lang === "es" ? "Spanish" : "German"}.`,
-        messages: [{ role: "user", content: `Start the ${tool.label} tool. Greet the user briefly and ask for the first required inputs.` }],
-      }),
-    });
-    const data = await res.json();
-    const reply = data.content?.map(b => b.text || "").join("") || "Error getting response.";
-    setMessages([userMsg, { role: "assistant", content: reply }]);
-  } catch {
-    setMessages([userMsg, { role: "assistant", content: "⚠️ Connection error. This tool requires internet connection." }]);
-  }
-  setLoading(false);
-};
-  
+  const startToolSession = async (tool) => {
+    setSelectedTool(tool);
+    setScreen("chat");
+    setMessages([]);
+    setSessionFault(tool.label);
+    const start = Date.now();
+    setSessionStart(start);
+    const userMsg = { role: "user", content: `🛠️ TOOL: ${tool.label}` };
+    setLoading(true);
+    setMessages([userMsg]);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: TOOL_PROMPTS[tool.id] + `\n\nLANGUAGE: Respond in ${lang === "en" ? "English" : lang === "fr" ? "French" : lang === "es" ? "Spanish" : "German"}.`,
+          messages: [{ role: "user", content: `Start the ${tool.label} tool. Greet the user briefly and ask for the first required inputs.` }],
+        }),
+      });
+      const data = await res.json();
+      const reply = data.content?.map(b => b.text || "").join("") || "Error getting response.";
+      setMessages([userMsg, { role: "assistant", content: reply }]);
+    } catch {
+      setMessages([userMsg, { role: "assistant", content: "⚠️ Connection error. This tool requires internet connection." }]);
+    }
+    setLoading(false);
+  };
+
   const startSession = async (faultDescription) => {
     setSessionFault(faultDescription);
     setScreen("chat");
@@ -586,7 +586,6 @@ const startToolSession = async (tool) => {
     const userMsg = { role: "user", content: `🔧 FAULT REPORTED: ${faultDescription}` };
 
     if (!isOnline) {
-      // Offline mode
       const tree = OFFLINE_TREES[faultDescription];
       if (tree) {
         const reply = { role: "assistant", content: tree[0] };
@@ -630,7 +629,6 @@ const startToolSession = async (tool) => {
     setMessages(newMessages);
 
     if (!isOnline) {
-      // Offline step progression
       const tree = OFFLINE_TREES[sessionFault];
       if (tree && offlineStep < tree.length) {
         const reply = tree[offlineStep];
@@ -720,7 +718,7 @@ const startToolSession = async (tool) => {
         </div>
       )}
 
-     {/* Header */}
+      {/* Header */}
       <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
 
         {/* LEFT — logo + title */}
@@ -732,24 +730,20 @@ const startToolSession = async (tool) => {
           </div>
         </div>
 
-        {/* RIGHT — buttons */}
+        {/* RIGHT — buttons (green AI status indicator removed) */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-   {user ? (
-  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
-    <button onClick={() => supabase.auth.signOut()} style={{ background: "transparent", border: "1px solid #64748b", color: "#64748b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-      Logout
-    </button>
-  </div>
-) : (
-  <button onClick={() => supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: 'https://introuble.vercel.app' } })} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-    🔐 Login
-  </button>
-)}
-          <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", background: isOnline ? "#0d2a1a" : "#2a1a0d", border: `1px solid ${isOnline ? "#10b981" : "#f59e0b"}`, borderRadius: 20, fontSize: 10, color: isOnline ? "#10b981" : "#f59e0b" }}>
-            <div style={{ width: 6, height: 6, borderRadius: "50%", background: isOnline ? "#10b981" : "#f59e0b", animation: "pulse 2s infinite" }} />
-            {isOnline ? "AI" : "OFF"}
-          </div>
+          {user ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
+              <button onClick={() => supabase.auth.signOut()} style={{ background: "transparent", border: "1px solid #64748b", color: "#64748b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: 'https://introuble.vercel.app' } })} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+              🔐 Login
+            </button>
+          )}
           <div style={{ position: "relative" }}>
             <button className="lang-btn" onClick={() => setShowLangMenu(v => !v)} style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
               {lang.toUpperCase()} ▾
@@ -770,7 +764,6 @@ const startToolSession = async (tool) => {
             </button>
           )}
         </div>
-
       </div>
 
       {/* Offline banner */}
@@ -814,7 +807,7 @@ const startToolSession = async (tool) => {
           </div>
         )}
 
-        {/* BRAND → CATEGORY FAULTS */}
+        {/* CATEGORY FAULTS */}
         {screen === "category" && selectedCategory && (
           <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px", maxWidth: 680, margin: "0 auto", width: "100%", animation: "slideIn 0.3s ease" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
@@ -879,31 +872,32 @@ const startToolSession = async (tool) => {
           </div>
         )}
 
-        {/* HISTORY */}
-{/* TOOLS */}
-{screen === "tools" && (
-  <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px", maxWidth: 680, margin: "0 auto", width: "100%", animation: "slideIn 0.3s ease" }}>
-    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: 2, color: "#f59e0b", marginBottom: 18 }}>🛠️ ENGINEERING TOOLS</div>
-    {Object.entries(TOOL_GROUPS).map(([groupId, group]) => {
-     const groupTools = TOOLS.filter(tool => tool.group === groupId);
-      return (
-        <div key={groupId} style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 10, color: group.color, letterSpacing: 1, marginBottom: 8, borderBottom: `1px solid ${group.color}22`, paddingBottom: 4 }}>{group.label}</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-            {groupTools.map(tool => (
-              <button key={tool.id} className="fault-btn" onClick={() => startToolSession(tool)}
-                style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#cbd5e1", padding: "11px 14px", borderRadius: 8, cursor: "pointer", textAlign: "left", fontSize: 12, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 10, transition: "all 0.15s" }}>
-                <span style={{ fontSize: 16 }}>{tool.icon}</span>
-                <span style={{ color: tool.color, marginRight: 4 }}>›</span>
-                {tool.label}
-              </button>
-            ))}
+        {/* TOOLS */}
+        {screen === "tools" && (
+          <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px", maxWidth: 680, margin: "0 auto", width: "100%", animation: "slideIn 0.3s ease" }}>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: 2, color: "#f59e0b", marginBottom: 18 }}>🛠️ ENGINEERING TOOLS</div>
+            {Object.entries(TOOL_GROUPS).map(([groupId, group]) => {
+              const groupTools = TOOLS.filter(tool => tool.group === groupId);
+              return (
+                <div key={groupId} style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: 10, color: group.color, letterSpacing: 1, marginBottom: 8, borderBottom: `1px solid ${group.color}22`, paddingBottom: 4 }}>{group.label}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                    {groupTools.map(tool => (
+                      <button key={tool.id} className="fault-btn" onClick={() => startToolSession(tool)}
+                        style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#cbd5e1", padding: "11px 14px", borderRadius: 8, cursor: "pointer", textAlign: "left", fontSize: 12, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 10, transition: "all 0.15s" }}>
+                        <span style={{ fontSize: 16 }}>{tool.icon}</span>
+                        <span style={{ color: tool.color, marginRight: 4 }}>›</span>
+                        {tool.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
-      );
-    })}
-  </div>
-)}
+        )}
+
+        {/* HISTORY */}
         {screen === "history" && (
           <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px", maxWidth: 680, margin: "0 auto", width: "100%", animation: "slideIn 0.3s ease" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -950,27 +944,27 @@ const startToolSession = async (tool) => {
       </div>
 
       {/* Bottom Nav */}
-<div style={{ background: "#0a1628", borderTop: "1px solid #1e3a5f", display: "flex", flexShrink: 0 }}>
-  {[
-    { id: "home",    icon: "🏠", label: t.nav.home },
-    { id: "tools",   icon: "🛠️", label: "Tools" },
-    { id: "history", icon: "📋", label: t.nav.history },
-  ].map(item => (
-    <button key={item.id} onClick={() => {
-      setTab(item.id);
-      if (item.id === "home") { reset(); }
-      else if (item.id === "tools") { reset(); setScreen("tools"); setTab("tools"); }
-      else if (item.id === "history") { setScreen("history"); }
-    }}
-      style={{ flex: 1, background: "transparent", border: "none", color: tab===item.id ? "#f59e0b" : "#64748b", padding: "12px 0 10px", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, borderTop: tab===item.id ? "2px solid #f59e0b" : "2px solid transparent" }}>
-      <span style={{ fontSize: 18 }}>{item.icon}</span>
-      <span style={{ fontSize: 10, letterSpacing: 0.5 }}>{item.label}</span>
-      {item.id === "history" && faultHistory.length > 0 && (
-        <span style={{ position: "absolute", marginLeft: 30, marginTop: -18, background: "#f59e0b", color: "#000", borderRadius: 10, fontSize: 9, padding: "1px 5px", fontWeight: 700 }}>{faultHistory.length}</span>
-      )}
-    </button>
-  ))}
-</div>
-</div>
+      <div style={{ background: "#0a1628", borderTop: "1px solid #1e3a5f", display: "flex", flexShrink: 0 }}>
+        {[
+          { id: "home",    icon: "🏠", label: t.nav.home },
+          { id: "tools",   icon: "🛠️", label: "Tools" },
+          { id: "history", icon: "📋", label: t.nav.history },
+        ].map(item => (
+          <button key={item.id} onClick={() => {
+            setTab(item.id);
+            if (item.id === "home") { reset(); }
+            else if (item.id === "tools") { reset(); setScreen("tools"); setTab("tools"); }
+            else if (item.id === "history") { setScreen("history"); }
+          }}
+            style={{ flex: 1, background: "transparent", border: "none", color: tab===item.id ? "#f59e0b" : "#64748b", padding: "12px 0 10px", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, borderTop: tab===item.id ? "2px solid #f59e0b" : "2px solid transparent" }}>
+            <span style={{ fontSize: 18 }}>{item.icon}</span>
+            <span style={{ fontSize: 10, letterSpacing: 0.5 }}>{item.label}</span>
+            {item.id === "history" && faultHistory.length > 0 && (
+              <span style={{ position: "absolute", marginLeft: 30, marginTop: -18, background: "#f59e0b", color: "#000", borderRadius: 10, fontSize: 9, padding: "1px 5px", fontWeight: 700 }}>{faultHistory.length}</span>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
