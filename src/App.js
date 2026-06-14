@@ -729,7 +729,7 @@ Keep responses concise and practical for field use.`;
 
   {/* RIGHT — logo + buttons */}
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <img src="/logo.png" alt="INTrouble" style={{ height: 45, borderRadius: 6 }} />
+    <img src="/logo.png" alt="INTrouble" style={{ height: 85, borderRadius: 6 }} />
     {user ? (
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
