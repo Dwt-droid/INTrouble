@@ -719,52 +719,51 @@ Keep responses concise and practical for field use.`;
       )}
 
       {/* Header */}
-      <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+  <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
 
-        {/* LEFT — logo + title */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/logo.png" alt="INTrouble" style={{ height: 55, borderRadius: 6 }} />
-          <div>
-            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
-            <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub}</div>
-          </div>
-        </div>
+  {/* LEFT — title only */}
+  <div>
+    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
+    <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub}</div>
+  </div>
 
-        {/* RIGHT — buttons (green AI status indicator removed) */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {user ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
-              <button onClick={() => supabase.auth.signOut()} style={{ background: "transparent", border: "1px solid #64748b", color: "#64748b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-                Logout
-              </button>
-            </div>
-          ) : (
-            <button onClick={() => supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: 'https://introuble.vercel.app' } })} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-              🔐 Login
-            </button>
-          )}
-          <div style={{ position: "relative" }}>
-            <button className="lang-btn" onClick={() => setShowLangMenu(v => !v)} style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-              {lang.toUpperCase()} ▾
-            </button>
-            {showLangMenu && (
-              <div style={{ position: "absolute", right: 0, top: "110%", background: "#0a1628", border: "1px solid #1e3a5f", borderRadius: 8, zIndex: 100, overflow: "hidden", minWidth: 100 }}>
-                {["en","fr","es","de"].map(l => (
-                  <button key={l} onClick={() => { setLang(l); setShowLangMenu(false); }} style={{ display: "block", width: "100%", padding: "8px 14px", background: lang===l ? "#1e3a5f" : "transparent", border: "none", color: "#e2e8f0", fontSize: 12, fontFamily: "inherit", cursor: "pointer", textAlign: "left" }}>
-                    {l==="en"?"🇬🇧 English":l==="fr"?"🇫🇷 Français":l==="es"?"🇪🇸 Español":"🇩🇪 Deutsch"}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          {screen !== "home" && screen !== "history" && (
-            <button className="btn-ghost" onClick={reset} style={{ background: "transparent", border: "1px solid #2a3a52", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-              {t.newSession}
-            </button>
-          )}
-        </div>
+  {/* RIGHT — logo + buttons */}
+  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <img src="/logo.png" alt="INTrouble" style={{ height: 45, borderRadius: 6 }} />
+    {user ? (
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
+        <button onClick={() => supabase.auth.signOut()} style={{ background: "transparent", border: "1px solid #64748b", color: "#64748b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+          Logout
+        </button>
       </div>
+    ) : (
+      <button onClick={() => supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: 'https://introuble.vercel.app' } })} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+        🔐 Login
+      </button>
+    )}
+    <div style={{ position: "relative" }}>
+      <button className="lang-btn" onClick={() => setShowLangMenu(v => !v)} style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+        {lang.toUpperCase()} ▾
+      </button>
+      {showLangMenu && (
+        <div style={{ position: "absolute", right: 0, top: "110%", background: "#0a1628", border: "1px solid #1e3a5f", borderRadius: 8, zIndex: 100, overflow: "hidden", minWidth: 100 }}>
+          {["en","fr","es","de"].map(l => (
+            <button key={l} onClick={() => { setLang(l); setShowLangMenu(false); }} style={{ display: "block", width: "100%", padding: "8px 14px", background: lang===l ? "#1e3a5f" : "transparent", border: "none", color: "#e2e8f0", fontSize: 12, fontFamily: "inherit", cursor: "pointer", textAlign: "left" }}>
+              {l==="en"?"🇬🇧 English":l==="fr"?"🇫🇷 Français":l==="es"?"🇪🇸 Español":"🇩🇪 Deutsch"}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+    {screen !== "home" && screen !== "history" && (
+      <button className="btn-ghost" onClick={reset} style={{ background: "transparent", border: "1px solid #2a3a52", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+        {t.newSession}
+      </button>
+    )}
+  </div>
+
+</div>
 
       {/* Offline banner */}
       {!isOnline && screen !== "history" && (
