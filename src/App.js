@@ -727,7 +727,7 @@ Keep responses concise and practical for field use.`;
     <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
     <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub}</div>
   </div>
-  <img src="/tools-banner.svg" alt="" style={{ height: 32, width: "auto", objectFit: "contain" }} />
+  <img src="/tools-banner.svg" alt="" style={{ height: 60, width: "auto", objectFit: "contain" }} />
 </div>
 
   {/* RIGHT — logo + buttons */}
