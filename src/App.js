@@ -475,7 +475,6 @@ export default function App() {
   const t = T[lang];
 
   useEffect(() => {
-    useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
