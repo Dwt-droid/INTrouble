@@ -490,6 +490,12 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+    }
+  }, []);
+  
   useEffect(() => {
     if (!user) { setIsSubscribed(false); return; }
     setCheckingSub(true);
