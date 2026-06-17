@@ -771,9 +771,13 @@ Keep responses concise and practical for field use.`;
 
   return (
     <div style={{ minHeight: "100vh", background: "#070d17", color: "#e2e8f0", fontFamily: "'IBM Plex Mono', monospace", display: "flex", flexDirection: "column" }}>
-      <style>{`
+     <style>{`
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { overflow-x: hidden; max-width: 100%; }
+        @media (min-width: 700px) {
+          .tools-banner-img { display: block !important; }
+        }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #070d17; } ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
         @keyframes pulse { 0%,100% { opacity:0.3; transform:scale(0.8); } 50% { opacity:1; transform:scale(1); } }
         @keyframes slideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
@@ -797,12 +801,12 @@ Keep responses concise and practical for field use.`;
   <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
 
  {/* LEFT — title + tools banner */}
-<div style={{ display: "flex", alignItems: "center", gap: 180, paddingLeft: 44 }}>
+<div style={{ display: "flex", alignItems: "center", gap: 16, paddingLeft: 44, flexWrap: "wrap", maxWidth: "100%" }}>
   <div>
     <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
     <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub}</div>
   </div>
-  <img src="/tools-banner.svg" alt="" style={{ height: 60, width: "auto", objectFit: "contain" }} />
+  <img src="/tools-banner.svg" alt="" style={{ height: 40, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
 </div>
 
   {/* RIGHT — logo + buttons */}
