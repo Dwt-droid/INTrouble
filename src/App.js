@@ -469,10 +469,13 @@ export default function App() {
   const [savedToast, setSavedToast] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [user, setUser] = useState(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [checkingSub, setCheckingSub] = useState(false);
   const bottomRef = useRef(null);
   const t = T[lang];
 
   useEffect(() => {
+    useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
@@ -481,6 +484,41 @@ export default function App() {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user) { setIsSubscribed(false); return; }
+    setCheckingSub(true);
+    supabase
+      .from("subscriptions")
+      .select("is_subscribed")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        setIsSubscribed(data?.is_subscribed ?? false);
+        setCheckingSub(false);
+      });
+  }, [user]);
+
+  const handleSubscribe = async () => {
+    if (!user) {
+      alert("Please login first to subscribe.");
+      return;
+    }
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, userEmail: user.email }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch {
+      alert("Could not start checkout. Try again.");
+    }
+  };
+
+  const PAID_CATEGORIES = ["distribution", "control", "plc"];
+  const categoryIsLocked = (catId) => PAID_CATEGORIES.includes(catId) && !isSubscribed;
 
   useEffect(() => {
     const on = () => setIsOnline(true);
@@ -585,7 +623,7 @@ Keep responses concise and practical for field use.`;
     setSessionStart(start);
     const userMsg = { role: "user", content: `🔧 FAULT REPORTED: ${faultDescription}` };
 
-    if (!isOnline) {
+    if (!isOnline || !isSubscribed) {
       const tree = OFFLINE_TREES[faultDescription];
       if (tree) {
         const reply = { role: "assistant", content: tree[0] };
@@ -628,7 +666,7 @@ Keep responses concise and practical for field use.`;
     const newMessages = [...messages, { role: "user", content: userText }];
     setMessages(newMessages);
 
-    if (!isOnline) {
+   if (!isOnline || !isSubscribed) {
       const tree = OFFLINE_TREES[sessionFault];
       if (tree && offlineStep < tree.length) {
         const reply = tree[offlineStep];
@@ -740,10 +778,20 @@ Keep responses concise and practical for field use.`;
           Logout
         </button>
       </div>
-    ) : (
+   ) : (
       <button onClick={() => supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: 'https://introuble.vercel.app' } })} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
         🔐 Login
       </button>
+    )}
+    {user && !isSubscribed && !checkingSub && (
+      <button onClick={handleSubscribe} style={{ background: "#f59e0b", border: "none", color: "#000", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit", fontWeight: 700 }}>
+        ⭐ Subscribe
+      </button>
+    )}
+    {isSubscribed && (
+      <span style={{ fontSize: 10, color: "#10b981", border: "1px solid #10b981", padding: "4px 8px", borderRadius: 6 }}>
+        ✓ PRO
+      </span>
     )}
     <div style={{ position: "relative" }}>
       <button className="lang-btn" onClick={() => setShowLangMenu(v => !v)} style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
@@ -795,16 +843,21 @@ Keep responses concise and practical for field use.`;
               ))}
             </div>
 
-            <div style={{ fontSize: 11, color: "#64748b", letterSpacing: 1, marginBottom: 10 }}>{t.selectCategory}</div>
+           <div style={{ fontSize: 11, color: "#64748b", letterSpacing: 1, marginBottom: 10 }}>{t.selectCategory}</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              {categories.map(cat => (
-                <div key={cat.id} className="card" onClick={() => { setSelectedCategory(cat); setScreen("category"); }}
-                  style={{ background: "#0a1628", border: "1px solid #1e3a5f", borderRadius: 10, padding: "16px 14px", cursor: "pointer", "--accent": cat.color }}>
-                  <div style={{ fontSize: 22, marginBottom: 6 }}>{cat.icon}</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: cat.color, marginBottom: 3 }}>{cat.label}</div>
-                  <div style={{ fontSize: 10, color: "#64748b", lineHeight: 1.4 }}>{cat.desc}</div>
-                </div>
-              ))}
+              {categories.map(cat => {
+                const locked = categoryIsLocked(cat.id);
+                return (
+                  <div key={cat.id} className="card" onClick={() => { if (locked) { handleSubscribe(); return; } setSelectedCategory(cat); setScreen("category"); }}
+                    style={{ background: "#0a1628", border: "1px solid #1e3a5f", borderRadius: 10, padding: "16px 14px", cursor: "pointer", position: "relative", opacity: locked ? 0.6 : 1, "--accent": cat.color }}>
+                    {locked && <div style={{ position: "absolute", top: 10, right: 10, fontSize: 14 }}>🔒</div>}
+                    <div style={{ fontSize: 22, marginBottom: 6 }}>{cat.icon}</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: cat.color, marginBottom: 3 }}>{cat.label}</div>
+                    <div style={{ fontSize: 10, color: "#64748b", lineHeight: 1.4 }}>{cat.desc}</div>
+                    {locked && <div style={{ fontSize: 9, color: "#f59e0b", marginTop: 6 }}>⭐ PRO — Subscribe to unlock</div>}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -955,11 +1008,11 @@ Keep responses concise and practical for field use.`;
           <button key={item.id} onClick={() => {
             setTab(item.id);
             if (item.id === "home") { reset(); }
-            else if (item.id === "tools") { reset(); setScreen("tools"); setTab("tools"); }
+            else if (item.id === "tools") { if (!isSubscribed) { handleSubscribe(); return; } reset(); setScreen("tools"); setTab("tools"); }
             else if (item.id === "history") { setScreen("history"); }
           }}
-            style={{ flex: 1, background: "transparent", border: "none", color: tab===item.id ? "#f59e0b" : "#64748b", padding: "12px 0 10px", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, borderTop: tab===item.id ? "2px solid #f59e0b" : "2px solid transparent" }}>
-            <span style={{ fontSize: 18 }}>{item.icon}</span>
+           style={{ flex: 1, background: "transparent", border: "none", color: tab===item.id ? "#f59e0b" : "#64748b", padding: "12px 0 10px", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, borderTop: tab===item.id ? "2px solid #f59e0b" : "2px solid transparent" }}>
+            <span style={{ fontSize: 18 }}>{item.icon}{item.id === "tools" && !isSubscribed && " 🔒"}</span>
             <span style={{ fontSize: 10, letterSpacing: 0.5 }}>{item.label}</span>
             {item.id === "history" && faultHistory.length > 0 && (
               <span style={{ position: "absolute", marginLeft: 30, marginTop: -18, background: "#f59e0b", color: "#000", borderRadius: 10, fontSize: 9, padding: "1px 5px", fontWeight: 700 }}>{faultHistory.length}</span>
