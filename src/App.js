@@ -469,8 +469,14 @@ export default function App() {
   const [savedToast, setSavedToast] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [user, setUser] = useState(null);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+ const [isSubscribed, setIsSubscribed] = useState(false);
   const [checkingSub, setCheckingSub] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState("login"); // "login" | "signup"
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
   const bottomRef = useRef(null);
   const t = T[lang];
 
@@ -518,6 +524,32 @@ export default function App() {
 
   const PAID_CATEGORIES = ["distribution", "control", "plc"];
   const categoryIsLocked = (catId) => PAID_CATEGORIES.includes(catId) && !isSubscribed;
+
+  const handleAuthSubmit = async () => {
+    setAuthError("");
+    if (!authEmail.trim() || !authPassword.trim()) {
+      setAuthError("Please enter both email and password.");
+      return;
+    }
+    setAuthLoading(true);
+    try {
+      if (authMode === "signup") {
+        const { error } = await supabase.auth.signUp({ email: authEmail, password: authPassword });
+        if (error) throw error;
+        setAuthError("✓ Account created! Check your email to confirm, then login.");
+        setAuthMode("login");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email: authEmail, password: authPassword });
+        if (error) throw error;
+        setShowAuthModal(false);
+        setAuthEmail("");
+        setAuthPassword("");
+      }
+    } catch (err) {
+      setAuthError(err.message || "Something went wrong.");
+    }
+    setAuthLoading(false);
+  };
 
   useEffect(() => {
     const on = () => setIsOnline(true);
@@ -777,8 +809,8 @@ Keep responses concise and practical for field use.`;
           Logout
         </button>
       </div>
-   ) : (
-      <button onClick={() => supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: 'https://introuble.vercel.app' } })} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+  ) : (
+      <button onClick={() => { setShowAuthModal(true); setAuthMode("login"); setAuthError(""); }} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
         🔐 Login
       </button>
     )}
@@ -997,7 +1029,7 @@ Keep responses concise and practical for field use.`;
         )}
       </div>
 
-      {/* Bottom Nav */}
+     {/* Bottom Nav */}
       <div style={{ background: "#0a1628", borderTop: "1px solid #1e3a5f", display: "flex", flexShrink: 0 }}>
         {[
           { id: "home",    icon: "🏠", label: t.nav.home },
@@ -1019,6 +1051,55 @@ Keep responses concise and practical for field use.`;
           </button>
         ))}
       </div>
+
+      {/* AUTH MODAL */}
+      {showAuthModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000 }}
+          onClick={() => setShowAuthModal(false)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "#0a1628", border: "1px solid #1e3a5f", borderRadius: 12, padding: "28px 24px", width: "90%", maxWidth: 360, fontFamily: "'IBM Plex Mono', monospace" }}>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: 2, color: "#f59e0b", marginBottom: 4 }}>
+              {authMode === "login" ? "LOGIN" : "CREATE ACCOUNT"}
+            </div>
+            <div style={{ fontSize: 11, color: "#64748b", marginBottom: 18 }}>
+              {authMode === "login" ? "Welcome back to INTrouble" : "Join INTrouble"}
+            </div>
+
+            <div style={{ fontSize: 10, color: "#64748b", marginBottom: 5 }}>EMAIL</div>
+            <input type="email" value={authEmail} onChange={e => setAuthEmail(e.target.value)}
+              placeholder="you@example.com"
+              style={{ width: "100%", background: "#111c2d", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 12px", color: "#e2e8f0", fontSize: 13, fontFamily: "inherit", marginBottom: 14 }} />
+
+            <div style={{ fontSize: 10, color: "#64748b", marginBottom: 5 }}>PASSWORD</div>
+            <input type="password" value={authPassword} onChange={e => setAuthPassword(e.target.value)}
+              placeholder="••••••••"
+              onKeyDown={e => { if (e.key === "Enter") handleAuthSubmit(); }}
+              style={{ width: "100%", background: "#111c2d", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 12px", color: "#e2e8f0", fontSize: 13, fontFamily: "inherit", marginBottom: 14 }} />
+
+            {authError && (
+              <div style={{ fontSize: 11, color: authError.startsWith("✓") ? "#10b981" : "#ef4444", marginBottom: 14, lineHeight: 1.5 }}>
+                {authError}
+              </div>
+            )}
+
+            <button onClick={handleAuthSubmit} disabled={authLoading}
+              style={{ width: "100%", background: "#f59e0b", border: "none", borderRadius: 8, padding: "11px 0", color: "#000", fontSize: 13, fontWeight: 700, cursor: authLoading ? "not-allowed" : "pointer", fontFamily: "inherit", marginBottom: 12 }}>
+              {authLoading ? "..." : authMode === "login" ? "LOGIN" : "SIGN UP"}
+            </button>
+
+            <div style={{ textAlign: "center", fontSize: 11, color: "#64748b" }}>
+              {authMode === "login" ? (
+                <>No account? <span onClick={() => { setAuthMode("signup"); setAuthError(""); }} style={{ color: "#f59e0b", cursor: "pointer" }}>Sign up</span></>
+              ) : (
+                <>Already have an account? <span onClick={() => { setAuthMode("login"); setAuthError(""); }} style={{ color: "#f59e0b", cursor: "pointer" }}>Login</span></>
+              )}
+            </div>
+
+            <div onClick={() => setShowAuthModal(false)} style={{ textAlign: "center", marginTop: 16, fontSize: 11, color: "#475569", cursor: "pointer" }}>
+              Cancel
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
