@@ -496,7 +496,7 @@ useEffect(() => {
     }
   }, []);
   
-  useEffect(() => {
+useEffect(() => {
     if (!user) { setIsSubscribed(false); return; }
     setCheckingSub(true);
     supabase
@@ -507,11 +507,12 @@ useEffect(() => {
       .then(({ data }) => {
         setIsSubscribed(data?.is_subscribed ?? false);
         setCheckingSub(false);
-      });
-    .catch((err) => {
+      })
+      .catch((err) => {
         console.error("Subscription check failed:", err);
         setIsSubscribed(false);
         setCheckingSub(false);
+      });
   }, [user]);
 
   const handleSubscribe = async () => {
