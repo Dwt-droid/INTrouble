@@ -801,7 +801,7 @@ Keep responses concise and practical for field use.`;
   <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
 
  {/* LEFT — logo + tools banner */}
-<div style={{ display: "flex", alignItems: "center", gap: 100, flexWrap: "wrap", maxWidth: "100%" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 60, flexWrap: "wrap", maxWidth: "100%" }}>
  <img src="/logo-new.svg" alt="INTrouble" style={{ height: 85, borderRadius: 6 }} />
   <img src="/tools-banner.svg" alt="" style={{ height: 60, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
 </div>
