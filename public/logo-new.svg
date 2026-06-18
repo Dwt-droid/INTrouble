@@ -1,0 +1,18 @@
+<svg width="680" height="220" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>INTrouble logo with larger subtitle text</title>
+  <desc>Dark navy background with concentric blue circles, an orange lightning bolt, the INTrouble wordmark with a yellow highlighted T, and a larger industrial electrical diagnostics subtitle</desc>
+
+  <rect x="0" y="0" width="680" height="220" rx="14" fill="#0a1628"/>
+
+  <circle cx="120" cy="110" r="78" fill="none" stroke="#1e3a5f" stroke-width="3"/>
+  <circle cx="120" cy="110" r="58" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <circle cx="120" cy="110" r="38" fill="none" stroke="#3b82f6" stroke-width="3"/>
+  <circle cx="120" cy="110" r="20" fill="#0d1f3c"/>
+
+  <polygon points="128,68 104,118 122,118 110,164 152,104 130,104" fill="#f59e0b"/>
+
+  <text x="230" y="105" font-family="Arial, sans-serif" font-size="58" font-weight="800" fill="#ffffff">IN<tspan fill="#f59e0b">T</tspan>rouble</text>
+
+  <text x="232" y="150" font-family="Arial, sans-serif" font-size="26" font-weight="600" letter-spacing="3" fill="#94a3b8">INDUSTRIAL ELECTRICAL</text>
+  <text x="232" y="182" font-family="Arial, sans-serif" font-size="26" font-weight="600" letter-spacing="3" fill="#94a3b8">DIAGNOSTICS</text>
+</svg>
