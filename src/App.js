@@ -803,9 +803,10 @@ Keep responses concise and practical for field use.`;
  {/* LEFT — title + tools banner */}
 <div style={{ display: "flex", alignItems: "center", gap: 16, paddingLeft: 44, flexWrap: "wrap", maxWidth: "100%" }}>
   <div>
-    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
-    <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub}</div>
-  </div>
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
+      <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub.split(" ")[0]}</div>
+      <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub.split(" ").slice(1).join(" ")}</div>
+    </div>
   <img src="/tools-banner.svg" alt="" style={{ height: 40, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
 </div>
 
