@@ -801,15 +801,15 @@ Keep responses concise and practical for field use.`;
   <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
 
  {/* LEFT — logo + tools banner */}
-<div style={{ display: "flex", alignItems: "center", gap: 30, flexWrap: "wrap", maxWidth: "100%" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", maxWidth: "100%" }}>
  <img src="/logo-new.svg" alt="INTrouble" style={{ height: 85, borderRadius: 6 }} />
-  <img src="/tools-banner.svg" alt="" style={{ height: 60, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
+  <img src="/tools-banner.svg" alt="" style={{ height: 40, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
 </div>
 
   {/* RIGHT — title + buttons */}
-  <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
     <div>
-      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
       <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub.split(" ")[0]}</div>
       <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub.split(" ").slice(1).join(" ")}</div>
     </div>
