@@ -803,7 +803,7 @@ Keep responses concise and practical for field use.`;
  {/* LEFT — logo + tools banner */}
 <div style={{ display: "flex", alignItems: "center", gap: 140, flexWrap: "wrap", maxWidth: "100%" }}>
  <img src="/logo-new.svg" alt="INTrouble" style={{ height: 85, borderRadius: 6 }} />
-  <img src="/tools-banner.svg" alt="" style={{ height: 80, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
+  <img src="/tools-banner.svg" alt="" style={{ height: 60, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
 </div>
 
   {/* RIGHT — title + buttons */}
