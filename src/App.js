@@ -808,11 +808,7 @@ Keep responses concise and practical for field use.`;
 
   {/* RIGHT — title + buttons */}
   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-    <div>
-      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
-      <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub.split(" ")[0]}</div>
-      <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub.split(" ").slice(1).join(" ")}</div>
-    </div>
+    
     {user ? (
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
