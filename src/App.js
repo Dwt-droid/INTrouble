@@ -797,22 +797,22 @@ Keep responses concise and practical for field use.`;
         </div>
       )}
 
-      {/* Header */}
+   {/* Header */}
   <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
 
- {/* LEFT — title + tools banner */}
-<div style={{ display: "flex", alignItems: "center", gap: 16, paddingLeft: 44, flexWrap: "wrap", maxWidth: "100%" }}>
-  <div>
+ {/* LEFT — logo + tools banner */}
+<div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", maxWidth: "100%" }}>
+  <img src="/logo.png" alt="INTrouble" style={{ height: 85, borderRadius: 6 }} />
+  <img src="/tools-banner.svg" alt="" style={{ height: 40, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
+</div>
+
+  {/* RIGHT — title + buttons */}
+  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+    <div>
       <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: "#f59e0b" }}>{t.appName}</div>
       <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub.split(" ")[0]}</div>
       <div style={{ fontSize: 9, color: "#64748b", letterSpacing: 1 }}>{t.appSub.split(" ").slice(1).join(" ")}</div>
     </div>
-  <img src="/tools-banner.svg" alt="" style={{ height: 40, width: "auto", maxWidth: "100%", objectFit: "contain", display: "none" }} className="tools-banner-img" />
-</div>
-
-  {/* RIGHT — logo + buttons */}
-  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <img src="/logo.png" alt="INTrouble" style={{ height: 85, borderRadius: 6 }} />
     {user ? (
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
