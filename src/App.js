@@ -561,7 +561,11 @@ useEffect(() => {
     }
     setAuthLoading(false);
   };
-
+const handleGitHubLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: "github" });
+    if (error) setAuthError(error.message);
+  };
+  
   useEffect(() => {
     const on = () => setIsOnline(true);
     const off = () => setIsOnline(false);
@@ -1077,17 +1081,19 @@ Keep responses concise and practical for field use.`;
               {authMode === "login" ? "Welcome back to INTrouble" : "Join INTrouble"}
             </div>
 
+            <button onClick={handleGitHubLogin} style={{ width: "100%", background: "#24292e", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 0", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              🐙 Continue with GitHub
+            </button>
+            <div style={{ textAlign: "center", fontSize: 10, color: "#475569", marginBottom: 14 }}>— OR —</div>
             <div style={{ fontSize: 10, color: "#64748b", marginBottom: 5 }}>EMAIL</div>
             <input type="email" value={authEmail} onChange={e => setAuthEmail(e.target.value)}
               placeholder="you@example.com"
               style={{ width: "100%", background: "#111c2d", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 12px", color: "#e2e8f0", fontSize: 13, fontFamily: "inherit", marginBottom: 14 }} />
-
             <div style={{ fontSize: 10, color: "#64748b", marginBottom: 5 }}>PASSWORD</div>
             <input type="password" value={authPassword} onChange={e => setAuthPassword(e.target.value)}
               placeholder="••••••••"
               onKeyDown={e => { if (e.key === "Enter") handleAuthSubmit(); }}
               style={{ width: "100%", background: "#111c2d", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 12px", color: "#e2e8f0", fontSize: 13, fontFamily: "inherit", marginBottom: 14 }} />
-
             {authError && (
               <div style={{ fontSize: 11, color: authError.startsWith("✓") ? "#10b981" : "#ef4444", marginBottom: 14, lineHeight: 1.5 }}>
                 {authError}
