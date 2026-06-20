@@ -812,29 +812,31 @@ Keep responses concise and practical for field use.`;
 
   {/* RIGHT — title + buttons */}
   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-    
-    {user ? (
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
-        <button onClick={() => supabase.auth.signOut()} style={{ background: "transparent", border: "1px solid #64748b", color: "#64748b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-          Logout
+
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+      {user ? (
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 11, color: "#10b981" }}>👤 {user.email.split("@")[0]}</span>
+          <button onClick={() => supabase.auth.signOut()} style={{ background: "transparent", border: "1px solid #64748b", color: "#64748b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+            Logout
+          </button>
+        </div>
+      ) : (
+        <button onClick={() => { setShowAuthModal(true); setAuthMode("login"); setAuthError(""); }} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
+          🔐 Login
         </button>
-      </div>
-  ) : (
-      <button onClick={() => { setShowAuthModal(true); setAuthMode("login"); setAuthError(""); }} style={{ background: "transparent", border: "1px solid #f59e0b", color: "#f59e0b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
-        🔐 Login
-      </button>
-    )}
-    {user && !isSubscribed && !checkingSub && (
-      <button onClick={handleSubscribe} style={{ background: "#f59e0b", border: "none", color: "#000", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit", fontWeight: 700 }}>
-        ⭐ Subscribe
-      </button>
-    )}
-    {isSubscribed && (
-      <span style={{ fontSize: 10, color: "#10b981", border: "1px solid #10b981", padding: "4px 8px", borderRadius: 6 }}>
-        ✓ PRO
-      </span>
-    )}
+      )}
+      {user && !isSubscribed && !checkingSub && (
+        <button onClick={handleSubscribe} style={{ background: "#f59e0b", border: "none", color: "#000", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit", fontWeight: 700 }}>
+          ⭐ Subscribe
+        </button>
+      )}
+      {isSubscribed && (
+        <span style={{ fontSize: 10, color: "#10b981", border: "1px solid #10b981", padding: "4px 8px", borderRadius: 6 }}>
+          ✓ PRO
+        </span>
+      )}
+    </div>
     <div style={{ position: "relative" }}>
       <button className="lang-btn" onClick={() => setShowLangMenu(v => !v)} style={{ background: "#0a1628", border: "1px solid #1e3a5f", color: "#94a3b8", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}>
         {lang.toUpperCase()} ▾
