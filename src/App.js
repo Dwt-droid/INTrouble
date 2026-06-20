@@ -803,7 +803,7 @@ Keep responses concise and practical for field use.`;
       )}
 
    {/* Header */}
-  <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+  <div style={{ background: "#0a1628", borderBottom: "1px solid #1e3a5f", padding: "12px 16px 12px 4px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
 
  {/* LEFT — logo + tools banner */}
 <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", maxWidth: "100%" }}>
