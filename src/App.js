@@ -811,7 +811,7 @@ Keep responses concise and practical for field use.`;
    </div>
 
   {/* RIGHT — title + buttons */}
-  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", justifyContent: "flex-end", rowGap: 10 }}>
 
     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
       {user ? (
