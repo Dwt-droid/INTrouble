@@ -1072,7 +1072,7 @@ Keep responses concise and practical for field use.`;
           <button key={item.id} onClick={() => {
             setTab(item.id);
             if (item.id === "home") { reset(); }
-            else if (item.id === "tools") { if (!isSubscribed) { handleSubscribe(); return; } reset(); setScreen("tools"); setTab("tools"); }
+            else if (item.id === "tools") { if (!isSubscribed && !isDevMode) { handleSubscribe(); return; } reset(); setScreen("tools"); setTab("tools"); }
             else if (item.id === "history") { setScreen("history"); }
           }}
            style={{ flex: 1, background: "transparent", border: "none", color: tab===item.id ? "#f59e0b" : "#64748b", padding: "12px 0 10px", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, borderTop: tab===item.id ? "2px solid #f59e0b" : "2px solid transparent" }}>
