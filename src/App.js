@@ -787,48 +787,6 @@ Keep responses concise and practical for field use.`;
     setLoading(false);
   };
 
-   if (!isOnline || !isSubscribed) {
-      const tree = OFFLINE_TREES[sessionFault];
-      if (tree && offlineStep < tree.length) {
-        const reply = tree[offlineStep];
-        setMessages([...newMessages, { role: "assistant", content: reply }]);
-        setOfflineStep(s => s + 1);
-      } else {
-        setMessages([...newMessages, { role: "assistant", content: "🎯 DIAGNOSIS: End of offline diagnostic tree.\n🔧 CORRECTIVE ACTION: Connect to internet for advanced AI-assisted diagnosis or contact manufacturer support." }]);
-        saveSession(newMessages, sessionFault, selectedCategory?.label, selectedBrand?.label, sessionStart);
-      }
-      return;
-    }
-
-    setLoading(true);
-    const apiMessages = [
-      { role: "user", content: `Category: ${selectedCategory?.label}\nBrand: ${selectedBrand?.label || "Generic"}\nFault: ${sessionFault}\n\nBegin troubleshooting.` },
-      ...newMessages.slice(1).map(m => ({ role: m.role, content: m.content })),
-    ];
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: buildSystemPrompt(),
-          messages: apiMessages,
-        }),
-      });
-      const data = await res.json();
-      const reply = data.content?.map(b => b.text || "").join("") || "Error.";
-      const finalMsgs = [...newMessages, { role: "assistant", content: reply }];
-      setMessages(finalMsgs);
-      if (reply.includes("🎯") || reply.includes("DIAGNOSIS") || reply.includes("DIAGNOS")) {
-        saveSession(finalMsgs, sessionFault, selectedCategory?.label, selectedBrand?.label, sessionStart);
-      }
-    } catch {
-      setMessages([...newMessages, { role: "assistant", content: "⚠️ Connection error." }]);
-    }
-    setLoading(false);
-  };
-
   const exportPDF = (session) => {
     const content = generatePDFContent(session, session.lang || lang);
     const blob = new Blob([content], { type: "text/plain" });
