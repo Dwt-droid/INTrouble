@@ -480,7 +480,7 @@ export default function App() {
   const bottomRef = useRef(null);
   const t = T[lang];
 
-const isDevMode = new URLSearchParams(window.location.search).get("dev") === "true";
+const isDevMode = new URLSearchParams(window.location.search).has("int");
 
   useEffect(() => {
     if (isDevMode) {
