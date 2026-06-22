@@ -483,6 +483,14 @@ export default function App() {
 const isDevMode = new URLSearchParams(window.location.search).get("dev") === "true";
   
   useEffect(() => {
+    if (isDevMode) {
+      setShowAuthModal(false);
+      setIsSubscribed(true);
+      setCheckingSub(false);
+    }
+  }, [isDevMode]);
+  
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
