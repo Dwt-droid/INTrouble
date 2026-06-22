@@ -1081,10 +1081,7 @@ Keep responses concise and practical for field use.`;
               {authMode === "login" ? "Welcome back to INTrouble" : "Join INTrouble"}
             </div>
 
-            <button onClick={handleGitHubLogin} style={{ width: "100%", background: "#24292e", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 0", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-              🐙 Continue with GitHub
-            </button>
-            <div style={{ textAlign: "center", fontSize: 10, color: "#475569", marginBottom: 14 }}>— OR —</div>
+           
             <div style={{ fontSize: 10, color: "#64748b", marginBottom: 5 }}>EMAIL</div>
             <input type="email" value={authEmail} onChange={e => setAuthEmail(e.target.value)}
               placeholder="you@example.com"
