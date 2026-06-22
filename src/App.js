@@ -661,7 +661,7 @@ Keep responses concise and practical for field use.`;
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 1000,
           system: TOOL_PROMPTS[tool.id] + `\n\nLANGUAGE: Respond in ${lang === "en" ? "English" : lang === "fr" ? "French" : lang === "es" ? "Spanish" : "German"}.`,
           messages: [{ role: "user", content: `Start the ${tool.label} tool. Greet the user briefly and ask for the first required inputs.` }],
