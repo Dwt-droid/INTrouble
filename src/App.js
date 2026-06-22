@@ -481,7 +481,7 @@ export default function App() {
   const t = T[lang];
 
 const isDevMode = new URLSearchParams(window.location.search).get("dev") === "true";
-  
+
   useEffect(() => {
     if (isDevMode) {
       setShowAuthModal(false);
@@ -489,7 +489,7 @@ const isDevMode = new URLSearchParams(window.location.search).get("dev") === "tr
       setCheckingSub(false);
     }
   }, [isDevMode]);
-  
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -500,13 +500,13 @@ const isDevMode = new URLSearchParams(window.location.search).get("dev") === "tr
     return () => subscription.unsubscribe();
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/service-worker.js").catch(() => {});
     }
   }, []);
-  
-useEffect(() => {
+
+  useEffect(() => {
     if (isDevMode) { setIsSubscribed(true); setCheckingSub(false); return; }
     if (!user) { setIsSubscribed(false); return; }
     setCheckingSub(true);
@@ -525,21 +525,6 @@ useEffect(() => {
         setCheckingSub(false);
       });
   }, [user, isDevMode]);
-    supabase
-      .from("subscriptions")
-      .select("is_subscribed")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        setIsSubscribed(data?.is_subscribed ?? false);
-        setCheckingSub(false);
-      })
-      .catch((err) => {
-        console.error("Subscription check failed:", err);
-        setIsSubscribed(false);
-        setCheckingSub(false);
-      });
-  }, [user]);
 
   const handleSubscribe = async () => {
     if (!user) {
