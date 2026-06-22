@@ -479,6 +479,7 @@ export default function App() {
   const [offlineStep, setOfflineStep] = useState(0);
   const [selectedTool, setSelectedTool] = useState(null);
   const [savedToast, setSavedToast] = useState(false);
+  const [attachedImage, setAttachedImage] = useState(null);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [user, setUser] = useState(null);
  const [isSubscribed, setIsSubscribed] = useState(false);
@@ -735,6 +736,57 @@ Keep responses concise and practical for field use.`;
     const newMessages = [...messages, { role: "user", content: userText }];
     setMessages(newMessages);
 
+    if (!isOnline || !isSubscribed) {
+      const tree = OFFLINE_TREES[sessionFault];
+      if (tree && offlineStep < tree.length) {
+        const reply = tree[offlineStep];
+        setMessages([...newMessages, { role: "assistant", content: reply }]);
+        setOfflineStep(s => s + 1);
+      } else {
+        setMessages([...newMessages, { role: "assistant", content: "🎯 DIAGNOSIS: End of offline diagnostic tree.\n🔧 CORRECTIVE ACTION: Connect to internet for advanced AI-assisted diagnosis or contact manufacturer support." }]);
+        saveSession(newMessages, sessionFault, selectedCategory?.label, selectedBrand?.label, sessionStart);
+      }
+      return;
+    }
+
+    setLoading(true);
+    const lastUserContent = attachedImage
+      ? [
+          { type: "image", source: { type: "base64", media_type: attachedImage.type, data: attachedImage.data } },
+          { type: "text", text: userText }
+        ]
+      : userText;
+
+    const apiMessages = [
+      { role: "user", content: `Category: ${selectedCategory?.label}\nBrand: ${selectedBrand?.label || "Generic"}\nFault: ${sessionFault}\n\nBegin troubleshooting.` },
+      ...newMessages.slice(1, -1).map(m => ({ role: m.role, content: m.content })),
+      { role: "user", content: lastUserContent },
+    ];
+    setAttachedImage(null);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: buildSystemPrompt(),
+          messages: apiMessages,
+        }),
+      });
+      const data = await res.json();
+      const reply = data.content?.map(b => b.text || "").join("") || "Error.";
+      const finalMsgs = [...newMessages, { role: "assistant", content: reply }];
+      setMessages(finalMsgs);
+      if (reply.includes("🎯") || reply.includes("DIAGNOSIS") || reply.includes("DIAGNOS")) {
+        saveSession(finalMsgs, sessionFault, selectedCategory?.label, selectedBrand?.label, sessionStart);
+      }
+    } catch {
+      setMessages([...newMessages, { role: "assistant", content: "⚠️ Connection error." }]);
+    }
+    setLoading(false);
+  };
+
    if (!isOnline || !isSubscribed) {
       const tree = OFFLINE_TREES[sessionFault];
       if (tree && offlineStep < tree.length) {
@@ -987,14 +1039,29 @@ Keep responses concise and practical for field use.`;
               )}
               <div ref={bottomRef} />
             </div>
-            <div style={{ padding: "12px 16px", background: "#0a1628", borderTop: "1px solid #1e3a5f", display: "flex", gap: 8 }}>
-              <textarea value={input} onChange={e => setInput(e.target.value)}
-                onKeyDown={e => { if (e.key==="Enter"&&!e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-                placeholder={t.typeResponse} rows={2}
-                style={{ flex: 1, background: "#111c2d", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 12px", color: "#e2e8f0", fontSize: 12, fontFamily: "inherit", resize: "none", lineHeight: 1.5 }} />
-              <button onClick={sendMessage} disabled={loading || !input.trim()}
-                style={{ background: loading||!input.trim() ? "#1e3a5f" : "#f59e0b", border: "none", borderRadius: 8, padding: "0 16px", color: loading ? "#64748b" : "#000", fontSize: 18, cursor: loading ? "not-allowed" : "pointer", fontWeight: 700 }}>↑</button>
-            </div>
+           <div style={{ padding: "12px 16px", background: "#0a1628", borderTop: "1px solid #1e3a5f", display: "flex", gap: 8, alignItems: "flex-end" }}>
+  <label style={{ cursor: "pointer", background: "#111c2d", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 12px", color: "#64748b", fontSize: 16, flexShrink: 0 }}>
+    📎
+    <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => setAttachedImage({ data: reader.result.split(",")[1], type: file.type, name: file.name });
+      reader.readAsDataURL(file);
+    }} />
+  </label>
+  {attachedImage && (
+    <div style={{ fontSize: 10, color: "#10b981", alignSelf: "center", flexShrink: 0, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      📄 {attachedImage.name}
+    </div>
+  )}
+  <textarea value={input} onChange={e => setInput(e.target.value)}
+    onKeyDown={e => { if (e.key==="Enter"&&!e.shiftKey) { e.preventDefault(); sendMessage(); } }}
+    placeholder={t.typeResponse} rows={2}
+    style={{ flex: 1, background: "#111c2d", border: "1px solid #1e3a5f", borderRadius: 8, padding: "10px 12px", color: "#e2e8f0", fontSize: 12, fontFamily: "inherit", resize: "none", lineHeight: 1.5 }} />
+  <button onClick={sendMessage} disabled={loading || !input.trim()}
+    style={{ background: loading||!input.trim() ? "#1e3a5f" : "#f59e0b", border: "none", borderRadius: 8, padding: "0 16px", color: loading ? "#64748b" : "#000", fontSize: 18, cursor: loading ? "not-allowed" : "pointer", fontWeight: 700 }}>↑</button>
+</div>
           </div>
         )}
 
