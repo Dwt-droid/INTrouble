@@ -243,6 +243,13 @@ const TOOLS = [
   { id: "frt",  icon: "🌊", label: "Francis Turbine Generator — Defects & Repair", group: "hydro",  color: "#06b6d4" },
   { id: "kpt",  icon: "🌊", label: "Kaplan Turbine Generator — Defects & Repair",  group: "hydro",  color: "#06b6d4" },
 ];
+const TOOL_GROUPS = {
+  design:    { label: "DESIGN & DRAFTING",        color: "#f59e0b" },
+  analysis:  { label: "ANALYSIS",                 color: "#3b82f6" },
+  dimension: { label: "DIMENSIONING",             color: "#10b981" },
+  calc:      { label: "CALCULATIONS",             color: "#8b5cf6" },
+  hydro:     { label: "HYDRO TURBINE GENERATORS", color: "#06b6d4" },
+};
 
 const TOOL_PROMPTS = {
   swl: `You are an electrical designer specializing in single-line diagrams (SLD) for LV (≤1kV), MV (1–36kV), and HV (>36kV) networks, following IEC 60617 and IEC 61082 standards.
