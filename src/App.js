@@ -480,6 +480,8 @@ export default function App() {
   const bottomRef = useRef(null);
   const t = T[lang];
 
+const isDevMode = new URLSearchParams(window.location.search).get("dev") === "true";
+  
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -497,8 +499,24 @@ useEffect(() => {
   }, []);
   
 useEffect(() => {
+    if (isDevMode) { setIsSubscribed(true); setCheckingSub(false); return; }
     if (!user) { setIsSubscribed(false); return; }
     setCheckingSub(true);
+    supabase
+      .from("subscriptions")
+      .select("is_subscribed")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        setIsSubscribed(data?.is_subscribed ?? false);
+        setCheckingSub(false);
+      })
+      .catch((err) => {
+        console.error("Subscription check failed:", err);
+        setIsSubscribed(false);
+        setCheckingSub(false);
+      });
+  }, [user, isDevMode]);
     supabase
       .from("subscriptions")
       .select("is_subscribed")
