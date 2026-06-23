@@ -676,7 +676,8 @@ Keep responses concise and practical for field use.`;
         }),
       });
       const data = await res.json();
-      const reply = data.content?.map(b => b.text || "").join("") || "Error getting response.";
+     const rawReply = data.content?.map(b => b.text || "").join("") || "Error getting response.";
+const reply = rawReply.replace(/#{1,6}\s?/g, "").replace(/\*\*/g, "").replace(/\*/g, "").replace(/---/g, "").replace(/___/g, "").trim();
       setMessages([userMsg, { role: "assistant", content: reply }]);
     } catch {
       setMessages([userMsg, { role: "assistant", content: "⚠️ Connection error. This tool requires internet connection." }]);
@@ -775,7 +776,8 @@ Keep responses concise and practical for field use.`;
         }),
       });
       const data = await res.json();
-      const reply = data.content?.map(b => b.text || "").join("") || "Error.";
+     const rawReply = data.content?.map(b => b.text || "").join("") || "Error.";
+const reply = rawReply.replace(/#{1,6}\s?/g, "").replace(/\*\*/g, "").replace(/\*/g, "").replace(/---/g, "").replace(/___/g, "").trim();
       const finalMsgs = [...newMessages, { role: "assistant", content: reply }];
       setMessages(finalMsgs);
       if (reply.includes("🎯") || reply.includes("DIAGNOSIS") || reply.includes("DIAGNOS")) {
