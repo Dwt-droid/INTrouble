@@ -777,7 +777,16 @@ const reply = rawReply.replace(/#{1,6}\s?/g, "").replace(/\*\*/g, "").replace(/\
       });
       const data = await res.json();
      const rawReply = data.content?.map(b => b.text || "").join("") || "Error.";
-const reply = rawReply.replace(/#{1,6}\s?/g, "").replace(/\*\*/g, "").replace(/\*/g, "").replace(/---/g, "").replace(/___/g, "").trim();
+const reply = rawReply
+  .replace(/#{1,6}\s*/g, "")
+  .replace(/\*{1,3}/g, "")
+  .replace(/_{1,3}/g, "")
+  .replace(/---+/g, "")
+  .replace(/===+/g, "")
+  .replace(/✅\s*IF/g, "IF")
+  .replace(/❌\s*IF/g, "IF")
+  .replace(/⚠️/g, "WARNING:")
+  .trim();
       const finalMsgs = [...newMessages, { role: "assistant", content: reply }];
       setMessages(finalMsgs);
       if (reply.includes("🎯") || reply.includes("DIAGNOSIS") || reply.includes("DIAGNOS")) {
