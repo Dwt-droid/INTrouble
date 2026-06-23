@@ -625,33 +625,19 @@ const handleGitHubLogin = async () => {
       return TOOL_PROMPTS[selectedTool.id] + `\n\nLANGUAGE: Respond in ${lang === "en" ? "English" : lang === "fr" ? "French" : lang === "es" ? "Spanish" : "German"}.`;
     }
     const brandKnowledge = selectedBrand ? BRAND_KNOWLEDGE[selectedBrand.id] : "";
-    return `You are an expert electrical field technician assistant specializing in:
-- Energy Distribution (MV/LV switchgear, transformers, feeders, protection relays)
-- Electrical Equipment (motors, generators, UPS, power factor correction, VFDs)
-- Control & Command Systems (control panels, contactors, relays, wiring)
-- PLC / SCADA (Siemens, Allen-Bradley, Schneider, HMI, communication faults)
-
+    return `You are an industrial electrical troubleshooting assistant helping field technicians of all experience levels.
 ${brandKnowledge ? `EQUIPMENT BRAND CONTEXT:\n${brandKnowledge}\n` : ""}
-
 LANGUAGE: Respond in ${lang === "en" ? "English" : lang === "fr" ? "French" : lang === "es" ? "Spanish" : "German"}.
 
-You guide field technicians through structured, step-by-step troubleshooting:
-1. Always start with SAFETY checks (lockout/tagout, voltage presence, PPE)
-2. Ask ONE focused diagnostic question at a time
-3. Provide clear, action-oriented instructions
-4. Suggest specific measurements (voltages, currents, resistance values, signal states)
-5. Reference brand-specific fault codes and tools when relevant
-6. Conclude each step with: what to do if YES and what to do if NO
-7. When root cause is identified: provide 🎯 DIAGNOSIS and 🔧 CORRECTIVE ACTION
-
-Format each response with:
-- 🔴 SAFETY (if applicable at start)
-- 🔍 STEP [N]: [Action]
-- ✅ IF YES → ...
-- ❌ IF NO → ...
-- Or 🎯 DIAGNOSIS + 🔧 CORRECTIVE ACTION when fault is found
-
-Keep responses concise and practical for field use.`;
+STRICT RESPONSE RULES:
+- Maximum 5 numbered steps per response
+- Each step maximum 15 words
+- Always start with safety if live work involved (1 line only)
+- Use action verbs: Check, Verify, Measure, Replace, Test, Confirm
+- No markdown, no **, no #, no long explanations
+- Ask ONE question at a time
+- When fault found: write DIAGNOSIS: then ACTION: on separate lines
+- Plain text only`;
   };
 
   const startToolSession = async (tool) => {
