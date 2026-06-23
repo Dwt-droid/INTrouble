@@ -676,8 +676,8 @@ Keep responses concise and practical for field use.`;
         }),
       });
       const data = await res.json();
-     const rawReply = data.content?.map(b => b.text || "").join("") || "Error getting response.";
-const reply = rawReply.replace(/#{1,6}\s?/g, "").replace(/\*\*/g, "").replace(/\*/g, "").replace(/---/g, "").replace(/___/g, "").trim();
+ const rawReply = data.content?.map(b => b.text || "").join("") || "Error getting response.";
+const reply = rawReply.replace(/#{1,6}\s*/g, "").replace(/\*{1,3}/g, "").replace(/_{1,3}/g, "").replace(/---+/g, "").replace(/===+/g, "").trim();
       setMessages([userMsg, { role: "assistant", content: reply }]);
     } catch {
       setMessages([userMsg, { role: "assistant", content: "⚠️ Connection error. This tool requires internet connection." }]);
@@ -714,14 +714,15 @@ const reply = rawReply.replace(/#{1,6}\s?/g, "").replace(/\*\*/g, "").replace(/\
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+         model: "claude-sonnet-4-6",
           max_tokens: 1000,
           system: buildSystemPrompt(),
           messages: [{ role: "user", content: initialMsg }],
         }),
       });
       const data = await res.json();
-      const reply = data.content?.map(b => b.text || "").join("") || "Error getting response.";
+      const rawReply = data.content?.map(b => b.text || "").join("") || "Error getting response.";
+const reply = rawReply.replace(/#{1,6}\s*/g, "").replace(/\*{1,3}/g, "").replace(/_{1,3}/g, "").replace(/===+/g, "").replace(/---+/g, "").trim();
       const newMsgs = [userMsg, { role: "assistant", content: reply }];
       setMessages(newMsgs);
     } catch {
