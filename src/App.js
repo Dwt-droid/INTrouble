@@ -174,6 +174,7 @@ const BRANDS = [
   { id: "siemens", label: "Siemens", color: "#009999", logo: "SIE" },
   { id: "ge", label: "GE", color: "#003087", logo: "GE" },
   { id: "rockwell", label: "Rockwell / Allen-Bradley", color: "#cc2233", logo: "AB" },
+  { id: "beckhoff", label: "Beckhoff", color: "#009ee0", logo: "BKH" },
   { id: "eaton", label: "Eaton", color: "#f0a500", logo: "EAT" },
   { id: "legrand", label: "Legrand", color: "#8b1a1a", logo: "LGR" },
   { id: "hitachi", label: "Hitachi Energy", color: "#e60026", logo: "HIT" },
