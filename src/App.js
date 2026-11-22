@@ -483,7 +483,7 @@ export default function App() {
   const [attachedImage, setAttachedImage] = useState(null);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [user, setUser] = useState(null);
-  const FREE_LIMIT = 3;
+  const FREE_LIMIT = 1;
 const [freeUsed, setFreeUsed] = useState(() => { try { return parseInt(localStorage.getItem("freeUsed") || "0", 10); } catch { return 0; } });
  const [isSubscribed, setIsSubscribed] = useState(false);
   const [checkingSub, setCheckingSub] = useState(false);
