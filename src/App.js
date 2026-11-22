@@ -483,6 +483,8 @@ export default function App() {
   const [attachedImage, setAttachedImage] = useState(null);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [user, setUser] = useState(null);
+  const FREE_LIMIT = 3;
+const [freeUsed, setFreeUsed] = useState(() => { try { return parseInt(localStorage.getItem("freeUsed") || "0", 10); } catch { return 0; } });
  const [isSubscribed, setIsSubscribed] = useState(false);
   const [checkingSub, setCheckingSub] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -560,7 +562,9 @@ const isDevMode = new URLSearchParams(window.location.search).has("int");
 
   const PAID_CATEGORIES = ["distribution", "control", "plc"];
   const categoryIsLocked = (catId) => PAID_CATEGORIES.includes(catId) && !isSubscribed;
-  const aiAllowed = isOnline && (isSubscribed || selectedCategory?.id === "equipment");
+  const freeLimitReached = !isSubscribed && freeUsed >= FREE_LIMIT;
+const aiAllowed = isOnline && !freeLimitReached && (isSubscribed || selectedCategory?.id === "equipment");
+
 
   const handleAuthSubmit = async () => {
     setAuthError("");
@@ -683,6 +687,10 @@ const reply = rawReply.replace(/#{1,6}\s*/g, "").replace(/\*{1,3}/g, "").replace
     const userMsg = { role: "user", content: `🔧 FAULT REPORTED: ${faultDescription}` };
 
     if (!aiAllowed) {
+            if (freeLimitReached) {
+        setMessages([userMsg, { role: "assistant", content: "🔒 Free limit reached. Subscribe to continue using AI diagnostics." }]);
+        return;
+      }
       const tree = OFFLINE_TREES[faultDescription];
       if (tree) {
         const reply = { role: "assistant", content: tree[0] };
@@ -713,6 +721,11 @@ const reply = rawReply.replace(/#{1,6}\s*/g, "").replace(/\*{1,3}/g, "").replace
 const reply = rawReply.replace(/#{1,6}\s*/g, "").replace(/\*{1,3}/g, "").replace(/_{1,3}/g, "").replace(/===+/g, "").replace(/---+/g, "").trim();
       const newMsgs = [userMsg, { role: "assistant", content: reply }];
       setMessages(newMsgs);
+      if (!isSubscribed) {
+  const n = freeUsed + 1;
+  setFreeUsed(n);
+  try { localStorage.setItem("freeUsed", String(n)); } catch {}
+      }
     } catch {
       setMessages([userMsg, { role: "assistant", content: "⚠️ Connection error. Switching to offline mode.\n\n" + (OFFLINE_TREES[faultDescription]?.[0] || t.offlineNotice) }]);
     }
@@ -727,6 +740,10 @@ const reply = rawReply.replace(/#{1,6}\s*/g, "").replace(/\*{1,3}/g, "").replace
     setMessages(newMessages);
 
    if (!aiAllowed) {
+           if (freeLimitReached) {
+        setMessages([...newMessages, { role: "assistant", content: "🔒 Free limit reached. Subscribe to continue using AI diagnostics." }]);
+        return;
+      }
       const tree = OFFLINE_TREES[sessionFault];
       if (tree && offlineStep < tree.length) {
         const reply = tree[offlineStep];
@@ -778,6 +795,11 @@ const reply = rawReply
   .trim();
       const finalMsgs = [...newMessages, { role: "assistant", content: reply }];
       setMessages(finalMsgs);
+      if (!isSubscribed) {
+  const n = freeUsed + 1;
+  setFreeUsed(n);
+  try { localStorage.setItem("freeUsed", String(n)); } catch {}
+      }
       if (reply.includes("🎯") || reply.includes("DIAGNOSIS") || reply.includes("DIAGNOS")) {
         saveSession(finalMsgs, sessionFault, selectedCategory?.label, selectedBrand?.label, sessionStart);
       }
