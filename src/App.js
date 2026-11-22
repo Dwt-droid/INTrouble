@@ -560,6 +560,7 @@ const isDevMode = new URLSearchParams(window.location.search).has("int");
 
   const PAID_CATEGORIES = ["distribution", "control", "plc"];
   const categoryIsLocked = (catId) => PAID_CATEGORIES.includes(catId) && !isSubscribed;
+  const aiAllowed = isOnline && (isSubscribed || selectedCategory?.id === "equipment");
 
   const handleAuthSubmit = async () => {
     setAuthError("");
@@ -681,7 +682,7 @@ const reply = rawReply.replace(/#{1,6}\s*/g, "").replace(/\*{1,3}/g, "").replace
     setSessionStart(start);
     const userMsg = { role: "user", content: `🔧 FAULT REPORTED: ${faultDescription}` };
 
-    if (!isOnline || !isSubscribed) {
+    if (!aiAllowed) {
       const tree = OFFLINE_TREES[faultDescription];
       if (tree) {
         const reply = { role: "assistant", content: tree[0] };
@@ -725,7 +726,7 @@ const reply = rawReply.replace(/#{1,6}\s*/g, "").replace(/\*{1,3}/g, "").replace
     const newMessages = [...messages, { role: "user", content: userText }];
     setMessages(newMessages);
 
-    if (!isOnline || !isSubscribed) {
+   if (!aiAllowed) {
       const tree = OFFLINE_TREES[sessionFault];
       if (tree && offlineStep < tree.length) {
         const reply = tree[offlineStep];
